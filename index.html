@@ -1,0 +1,103 @@
+
+<hr />
+<select id="turno" name="turno" >
+  <option value="09:00" >9:00</option>
+  <option value="14:00" >14:00</option>
+</select>
+
+<input type="checkbox" name="dia" value="1" /> - Segunda
+<input type="checkbox" name="dia" value="2" /> - Ter&ccedil;a
+<input type="checkbox" name="dia" value="3" /> - Quarta
+<input type="checkbox" name="dia" value="4" /> - Quinta
+<input type="checkbox" name="dia" value="5" /> - Sexta
+<input type="checkbox" name="dia" value="6" /> - Sabado
+<input type="checkbox" name="dia" value="0" /> - Domingo
+
+<a href="#null" onclick="gerarDatas()" class="btn btn-info" >Gerar Datas</a>
+<hr />
+
+<table id="tabea">
+  <thead>
+    <tr>
+      <th>Dia</th>
+      <th>Hora</th>
+    </tr>
+  </thead>
+  <tbody id="tabelaDatas" >
+  </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+<script>
+
+  function adicionarMaisDatas() {
+    var d = new Date();
+    var n = '2000000'+d.getSeconds()+d.getMilliseconds();
+    var html = "<tr>";
+    html    += "<td><input type='hidden' name='resposta["+n+"][id]' value='' />";
+    html    += "<input class='date form-control' type='text' data-mask='99/99/9999' name='resposta["+n+"][data]' /></td>";
+    html    += "<td><input class='date form-control' type='text' data-mask='99:99' name='resposta["+n+"][hora]' /></td>";
+    html    += "</tr>";
+
+    $("#tabelaDatas").append(html);
+  }
+
+  function adicionarData(dia, hora) {
+    var d = new Date();
+    var n = '2000000'+d.getSeconds()+d.getMilliseconds();
+    var html = "<tr>";
+    html    += "<td><input type='hidden' name='resposta["+n+"][id]' value='' />";
+    html    += "<input class='date form-control' type='text' value='"+dia+"' data-mask='99/99/9999' name='resposta["+n+"][data]' /></td>";
+    html    += "<td><input class='date form-control' type='text' value='"+hora+"' data-mask='99:99' name='resposta["+n+"][hora]' /></td>";
+    html    += "</tr>";
+
+    $("#tabelaDatas").append(html);
+  }
+
+  function gerarDatas() {
+    var turno = $('#turno option:selected').val();
+    var dias  = $("input[type=checkbox]:checked");
+
+    var datas     = new Date();
+    var hoje      = datas.getDate();
+    var numeroDia = datas.getDay();
+
+    var today    = new Date();
+    var tomorrow = new Date();
+    var contador = 0;
+    var mesAtual = today.getMonth();
+ 
+    var month = new Array();
+        month[0] = "01";
+        month[1] = "02";
+        month[2] = "03";
+        month[3] = "04";
+        month[4] = "05";
+        month[5] = "06";
+        month[6] = "07";
+        month[7] = "08";
+        month[8] = "09";
+        month[9] = "10";
+        month[10] = "11";
+        month[11] = "12";
+
+
+    var listaDias = [];    
+    dias.each(function(item) { 
+       listaDias.push(parseInt($(dias[item]).val()));
+    });
+
+    while(tomorrow.getMonth()==mesAtual) {
+      tomorrow.setDate(today.getDate()+contador);
+      if(tomorrow.getMonth()==mesAtual) {
+        if($.inArray(tomorrow.getDay(), listaDias) !== -1) {
+          var novaData = tomorrow.getDate()+'/'+month[tomorrow.getMonth()]+'/'+tomorrow.getFullYear();
+          adicionarData(novaData, turno); 
+        } 
+      }
+      contador++;
+    } 
+ }
+
+</script>
